@@ -31,7 +31,7 @@ Every form is protected against spam with a hidden field and rate limits, and se
 
 ## Requirements
 
-- PHP 8.3 or newer, with the `pdo_mysql` (or `pdo_sqlite`), `mbstring`, `openssl`, `fileinfo` and `gd` extensions
+- PHP 8.4 or newer, with the `pdo_mysql` (or `pdo_sqlite`), `mbstring`, `openssl`, `fileinfo` and `gd` extensions
 - Composer
 - MySQL 8 / MariaDB 10.6, or SQLite
 
@@ -58,19 +58,19 @@ Run the tests with `php artisan test`.
 1. Upload the code or `git clone` it onto the server.
 2. Run `composer install --no-dev --optimize-autoloader`.
 3. Copy `.env.example` to `.env` and set:
-   - `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://swatch.org.ng`
-   - the database settings (`DB_CONNECTION=mysql`, `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`)
-   - mail settings (`MAIL_MAILER=smtp` and your SMTP details) so form alerts are delivered
-   - a strong `ADMIN_PASSWORD`
+    - `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://swatch.org.ng`
+    - the database settings (`DB_CONNECTION=mysql`, `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`)
+    - mail settings (`MAIL_MAILER=smtp` and your SMTP details) so form alerts are delivered
+    - a strong `ADMIN_PASSWORD`
 4. Run:
-   ```bash
-   php artisan key:generate
-   php artisan migrate --seed --force
-   php artisan storage:link
-   php artisan config:cache
-   php artisan route:cache
-   php artisan view:cache
-   ```
+    ```bash
+    php artisan key:generate
+    php artisan migrate --seed --force
+    php artisan storage:link
+    php artisan config:cache
+    php artisan route:cache
+    php artisan view:cache
+    ```
 5. Point the domain's document root to the `public` folder.
 
 **On cPanel shared hosting**, put the project outside `public_html` (for example in `~/swatch`), then either point the domain's document root to `~/swatch/public`, or copy the contents of `public/` into `public_html` and change the two paths in `public_html/index.php` to point to `~/swatch`. If `storage:link` is not allowed, create the symlink from the cPanel terminal: `ln -s ~/swatch/storage/app/public ~/public_html/storage`.
