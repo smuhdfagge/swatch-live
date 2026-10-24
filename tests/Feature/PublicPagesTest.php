@@ -22,7 +22,7 @@ class PublicPagesTest extends TestCase
     public static function pages(): array
     {
         return [
-            'home' => ['/', 'Standing with women, girls and children in Kano'],
+            'home' => ['/', 'Support for Women and Teenage Children</h1>'],
             'about' => ['/about', 'How we started'],
             'work' => ['/our-work', 'Thematic areas'],
             'area' => ['/our-work/health', 'Related programmes'],

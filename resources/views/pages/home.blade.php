@@ -5,7 +5,7 @@
     <div class="hero-laurel">@include('partials.laurel')</div>
     <div class="wrap">
         <div>
-            <h1>Standing with women, girls and children in Kano since 2000.</h1>
+            <h1>Support for Women and Teenage Children</h1>
             <p class="lead">SWATCH is a women-led, non-profit organisation. We run health, education and livelihood programmes for the families who need them most, and we have done this work with partners such as FHI 360, Chemonics International and the Society for Family Health.</p>
             <div class="btn-row">
                 <a class="btn btn-indigo" href="{{ route('projects.index') }}">See our programme record</a>
