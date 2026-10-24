@@ -62,7 +62,7 @@ return [
         'volunteers' => 80,
     ],
 
-    'vision' => 'A healthy, empowered and poverty-free society.',
+    'vision' => 'To see a healthy, empowered and poverty free society.',
 
     'mission' => 'To improve the health and socio-economic status of women, children and young people, so they can enjoy a good quality of life and become self-reliant, dignified members of their communities.',
 
