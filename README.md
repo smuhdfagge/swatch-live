@@ -31,7 +31,7 @@ Every form is protected against spam with a hidden field and rate limits, and se
 
 ## Requirements
 
-- PHP 8.4 or newer, with the `pdo_mysql` (or `pdo_sqlite`), `mbstring`, `openssl`, `fileinfo` and `gd` extensions
+- PHP 8.3 or newer (8.4 recommended), with the `pdo_mysql` (or `pdo_sqlite`), `mbstring`, `openssl`, `fileinfo` and `gd` extensions
 - Composer
 - MySQL 8 / MariaDB 10.6, or SQLite
 
@@ -55,27 +55,50 @@ Run the tests with `php artisan test`.
 
 ## Deploy to a server
 
-1. Upload the code or `git clone` it onto the server.
-2. Run `composer install --no-dev --optimize-autoloader`.
-3. Copy `.env.example` to `.env` and set:
-    - `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://swatch.org.ng`
-    - the database settings (`DB_CONNECTION=mysql`, `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`)
-    - mail settings (`MAIL_MAILER=smtp` and your SMTP details) so form alerts are delivered
-    - a strong `ADMIN_PASSWORD`
-4. Run:
-    ```bash
-    php artisan key:generate
-    php artisan migrate --seed --force
-    php artisan storage:link
-    php artisan config:cache
-    php artisan route:cache
-    php artisan view:cache
-    ```
-5. Point the domain's document root to the `public` folder.
+Use the deploy script. It finds a suitable PHP binary, checks extensions, pulls the latest code, installs packages, runs migrations, adds the starting content on the first deploy only, links storage and caches everything. The site goes into maintenance mode during the update and always comes back up, even if a step fails.
 
-**On cPanel shared hosting**, put the project outside `public_html` (for example in `~/swatch`), then either point the domain's document root to `~/swatch/public`, or copy the contents of `public/` into `public_html` and change the two paths in `public_html/index.php` to point to `~/swatch`. If `storage:link` is not allowed, create the symlink from the cPanel terminal: `ln -s ~/swatch/storage/app/public ~/public_html/storage`.
+### First deploy
 
-After every update, run `php artisan migrate --force` and the three cache commands again.
+```bash
+git clone https://github.com/smuhdfagge/swatch-live.git ~/swatch
+cd ~/swatch
+bash deploy.sh
+```
+
+The first run creates `.env` and stops. Open it and fill in:
+
+- `APP_URL=https://swatch.org.ng`
+- the database settings (`DB_CONNECTION=mysql`, `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`)
+- mail settings (`MAIL_MAILER=smtp` and your SMTP details) so form alerts are delivered
+- `ADMIN_EMAIL` and a strong `ADMIN_PASSWORD`
+
+Then run `bash deploy.sh` again.
+
+### Where the site is served from
+
+- **VPS, or cPanel where you can set the document root:** point the domain to `~/swatch/public` and run `bash deploy.sh`.
+- **cPanel where the site must live in `public_html`:** run `bash deploy.sh --public-html ~/public_html`. The script copies the public files there, writes an `index.php` that loads the app from `~/swatch`, and links the uploads folder.
+
+### Updating the live site
+
+Push your changes to GitHub, then on the server run the same command again (`bash deploy.sh`, or with `--public-html` if you use it). Re-running is safe. It never resets the admin password or overwrites content edited in the admin. Use `--seed` only if you deliberately want to restore the starting content.
+
+Other options: `--no-pull` (when you upload files by FTP), `--branch NAME`, and `--php /path/to/php` to choose the PHP binary yourself. Run `bash deploy.sh --help` for the full list.
+
+For cPanel's Git Version Control, see `deploy/cpanel.yml.example`.
+
+### Deploying through a hosting panel or platform
+
+If your host runs the build for you, set its PHP version to 8.3 or 8.4 and use:
+
+- Build: `composer install --no-dev --optimize-autoloader`
+- Deploy: `php artisan migrate --force && php artisan swatch:seed-if-empty && php artisan storage:link && php artisan optimize`
+
+### About the lock file and PHP versions
+
+`composer.json` pins the platform to PHP 8.3 (`config.platform.php`), so `composer update` always produces a lock file that installs on PHP 8.3, 8.4 and 8.5, whatever PHP version you run it on. Do not remove that setting. Without it, a lock built on PHP 8.4 pulls in Symfony 8 packages that need PHP 8.4.1+, and the server fails with "Your lock file does not contain a compatible set of packages".
+
+If you ever see that error, check which PHP Composer is really using with `php -v` (on cPanel the command-line PHP is often older than the website's PHP). The deploy script finds the right one for you.
 
 ## Editing content
 
